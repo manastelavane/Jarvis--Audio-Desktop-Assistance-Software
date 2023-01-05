@@ -34,6 +34,7 @@ from Jarvis.config import config
 from googletrans import Translator
 from gtts import gTTS
 from playsound import playsound
+from Jarvis.features.curloc import *
 
 obj = JarvisAssistant()
 
@@ -53,11 +54,14 @@ GREETINGS_RES = ["always there for you sir", "i am ready sir",
 # =======================================================================================================================================================
 
 Assistant =pyttsx3.init('sapi5')   # microsoft ide for speech recognition.
-voices=Assistant.getProperty('voices') #creating instance variable
+voices=Assistant.getProperty('voices') #creating instance variable\
+
+
 # print(voices)
-Assistant.setProperty('voices',voices[0].id) #setting id of first voice to voices variable
+Assistant.setProperty('voices',voices[7].id) #setting id of first voice to voices variable
 # ) is male voice, 1 is female voice
 Assistant.setProperty('rate',170) #changing speed of jarvis speech . default=200
+
 
 def speak(text):
     obj.tts(text) #text to speech lib
@@ -111,11 +115,11 @@ def startup():
     speak("Starting all systems applications")
     speak("Installing and checking all drivers")
     speak("Caliberating and examining all the core processors")
-    # speak("Checking the internet connection")
-    # speak("Wait a moment sir")
-    # speak("All drivers are up and running")
-    # speak("All systems have been activated")
-    # speak("Now I am online")
+    speak("Checking the internet connection")
+    speak("Wait a moment sir")
+    speak("All drivers are up and running")
+    speak("All systems have been activated")
+    speak("Now I am online")
     # wish()
     
 def SpeedTest():
@@ -182,7 +186,7 @@ class MainThread(QThread): #app starts with this
     def TaskExecution(self):
         startup()
         # wish()
-
+        print(len(voices))
         while True:
             command = obj.mic_input()
             command=command.replace("jarvis","")
@@ -217,6 +221,7 @@ class MainThread(QThread): #app starts with this
             
                 speak("Searching "+command+ " on Wikipedia....") #mobile
                 wiki=wikipedia.summary(command,2) #2 is number of words in sentence
+                print(wiki)
                 speak(f"According to wikipedia:{wiki}")
                 continue
             
@@ -237,31 +242,6 @@ class MainThread(QThread): #app starts with this
                 jj=obj.mic_input()
                 speak(f"You said :{jj}")
 
-            # elif "email" in command or "send email" in command or "gmail" in command or "mail" in command:
-            #     sender_email = config.email
-            #     sender_email_id_password = config.email_password
-            #     try:
-            #         speak("Whom do you want to email sir ?")
-            #         recipient = obj.mic_input()
-            #         receiver_email = EMAIL_DIC.get(recipient)
-            #         if receiver_email:
-
-            #             s = smtplib.SMTP('smtp.gmail.com', 587)
-            #             s.starttls()
-            #             s.login(sender_email, sender_email_id_password)
-            #             speak("What should I say?")
-            #             message = obj.mic_input()
-            #             s.sendmail(sender_email, receiver_email, message)
-            #             s.quit()
-            #             speak("Email has been successfully sent")
-            #             time.sleep(2)
-
-                #     else:
-                #         speak(
-                #             "I coudn't find the requested person's email in my database. Please try again with a different name")
-
-                # except:
-                #     speak("Sorry sir. Couldn't send your mail. Please try again")
 
             if "joke" in command:
                 joke = pyjokes.get_joke()
@@ -309,14 +289,8 @@ class MainThread(QThread): #app starts with this
                 pyautogui.keyUp("alt")
 
             elif "where i am" in command or "current location" in command or "where am i" in command:
-                try:
-                    city, state, country = obj.my_location()
-                    print(city, state, country)
-                    speak(
-                        f"You are currently in {city} city which is in {state} state and country {country}")
-                except Exception as e:
-                    speak(
-                        "Sorry sir, I coundn't fetch your current location. Please try again")
+                curloc=getcurrentlocation()
+                speak(f"Your current location is {curloc}")
 
             elif "take screenshot" in command or "screenshot" in command or "take a screenshot" in command or "capture the screen" in command:
                 speak("By what name do you want to save the screenshot?")
@@ -385,7 +359,7 @@ class MainThread(QThread): #app starts with this
                 speak("Alright sir, going offline. It was nice working with you")
                 sys.exit()
 
-            elif "how to" in command:
+            elif "how to" in command or "steps" in command:
                 op=command.replace("jarvis","")
                 max_result=1
                 how_to_func=search_wikihow(op,max_result)
@@ -396,7 +370,7 @@ class MainThread(QThread): #app starts with this
                 command=command.replace("google","")
                 command=command.replace("for","")
                 obj.search_anything_google(command)
-            
+
             else:
                 continue
 
