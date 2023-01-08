@@ -38,6 +38,8 @@ from Jarvis.features.curloc import *
 
 obj = JarvisAssistant()
 
+
+
 # ================================ MEMORY ===========================================================================================================
 
 GREETINGS = ["hello jarvis","hello", "jarvis", "wake up jarvis", "you there jarvis", "time to work jarvis", "hey jarvis",
