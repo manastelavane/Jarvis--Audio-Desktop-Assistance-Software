@@ -6,7 +6,8 @@ import pprint
 import datetime
 import requests
 import sys
-import urllib.parse  
+import urllib.parse 
+import automatic_email 
 import wikipedia     
 import smtplib
 from pywikihow import search_wikihow
@@ -60,7 +61,7 @@ voices=Assistant.getProperty('voices') #creating instance variable\
 
 
 # print(voices)
-Assistant.setProperty('voices',voices[7].id) #setting id of first voice to voices variable
+Assistant.setProperty('voices',voices[1].id) #setting id of first voice to voices variable
 # ) is male voice, 1 is female voice
 Assistant.setProperty('rate',170) #changing speed of jarvis speech . default=200
 
@@ -233,6 +234,9 @@ class MainThread(QThread): #app starts with this
                 command=command.replace("some","")
                 speak("Playing music"+command)
                 pywhatkit.playonyt(command)
+
+            elif "email" in command or "mail" in command:
+                automatic_email.Automated_Email_Sending()
 
             elif 'youtube' in command:
                 command=command.replace("play ","")
@@ -411,7 +415,6 @@ class Main(QMainWindow):
         label_date = current_date.toString(Qt.ISODate)
         self.ui.textBrowser.setText(label_date)
         self.ui.textBrowser_2.setText(label_time)
-
 
 app = QApplication(sys.argv) #ui will be generated
 jarvis = Main() #object for ui is called
